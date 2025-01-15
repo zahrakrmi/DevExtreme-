@@ -15,3 +15,30 @@
 .dx-form-group-custom-caption span {
   line-height: 1;
 }
+
+.file-uploader-block {
+  width: 350px;
+  float: right;
+}
+
+.note {
+  font-size: 10pt;
+  color: #484848;
+  margin-left: 9px;
+}
+
+.note > span {
+  font-weight: 700;
+
+}
+
+.main-block {
+  max-width: 900px;
+  min-width: 700px;
+  min-height: 200px;
+}
+#summary {
+  padding-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}

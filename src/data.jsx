@@ -15,8 +15,34 @@ const employee = {
   Email: 'jheart@dx-email.com',
   Skype: 'jheart_DX_skype',
 };
+const کشور =[
+  'HR Manager',
+  'IT Manager',
+  'CEO',
+  'Controller',
+  'Sales Manager',
+  'Support Manager',
+  'Shipping Manager',
+]
+export const nameLabel = { 'aria-label': 'Name' };
+export const lastnameLabel = { 'aria-label': 'Name' };
+export const codeLabel = { 'aria-label': 'code' };
+export const phoneLabel = { 'aria-label': 'phone' };
+export const emailLabel = { 'aria-label': 'Email' };
+export const maskLabel = { 'aria-label': 'Mask' };
+export const dateLabel = { 'aria-label': 'Date' };
+export const cityLabel = { 'aria-label': 'City' };
+export const addressLabel = { 'aria-label': 'Address' };
+export const passwordLabel = { 'aria-label': 'Password' };
+export const countryLabel = { 'aria-label': 'Country' };
+
 export default {
   getEmployee() {
     return employee;
   },
+  getPositions() {
+    return کشور;
+  },
 };
+
+
