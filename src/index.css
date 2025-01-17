@@ -37,8 +37,11 @@
   min-width: 700px;
   min-height: 200px;
 }
-#summary {
-  padding-left: 5px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+
+#button{
+  float: center;
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  width: 120px;
 }

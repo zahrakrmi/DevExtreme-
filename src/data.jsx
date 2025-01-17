@@ -1,20 +1,40 @@
-const employee = {
-  ID: 1,
-  FirstName: 'John',
-  LastName: 'Heart',
-  CompanyName: 'Super Mart of the West',
-  Position: 'CEO',
-  OfficeNo: '901',
-  BirthDate: new Date(1964, 2, 16),
-  HireDate: new Date(1995, 0, 15),
-  Address: '351 S Hill St.',
-  City: 'Los Angeles',
-  State: 'CA',
-  Zipcode: '90013',
-  Phone: '+1(213) 555-9392',
-  Email: 'jheart@dx-email.com',
-  Skype: 'jheart_DX_skype',
+const employeeDataKey = 'employeeData'; // کلیدی برای ذخیره اطلاعات در localStorage
+
+export const getEmployee = () => {
+  const storedData = localStorage.getItem(employeeDataKey);
+  if (!storedData) {
+    console.error('No employee data found in localStorage.');
+    return {
+      نام: '',
+      نام_خانوادگی: '',
+      کد_ملی: '',
+      شماره_شناسنامه: '',
+      تاریخ_تولد: '',
+      محل_صدور: '',
+      شماره_اقتصادی: '',
+      کشور: '',
+      استان: '',
+      شهر: '',
+      کدپستی: '',
+      آدرس: 'تهران',
+      ایمیل: '',
+      تلفن_ثابت: '',
+      شماره_همراه: '',
+      حساب_بانکی: '',
+      شعبه_بانکی: '',
+      شماره_شبا: '',
+      شعبه_بیمه: '',
+    };
+  }
+  return JSON.parse(storedData);
 };
+
+
+// بروزرسانی اطلاعات در localStorage
+export const updateEmployee = (newData) => {
+  localStorage.setItem(employeeDataKey, JSON.stringify(newData));
+};
+
 const کشور =[
   'HR Manager',
   'IT Manager',
@@ -25,7 +45,7 @@ const کشور =[
   'Shipping Manager',
 ]
 export const nameLabel = { 'aria-label': 'Name' };
-export const lastnameLabel = { 'aria-label': 'Name' };
+export const lastnameLabel = { 'aria-label': 'lastName' };
 export const codeLabel = { 'aria-label': 'code' };
 export const phoneLabel = { 'aria-label': 'phone' };
 export const emailLabel = { 'aria-label': 'Email' };
