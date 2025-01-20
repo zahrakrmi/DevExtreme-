@@ -20,22 +20,15 @@ import timeZoneData from "cldr-data/supplemental/timeData.json";
 import likelySubtags from "cldr-data/supplemental/likelySubtags.json";
 import LabelTemplate from './LabelTemplate.jsx';
 import notify from 'devextreme/ui/notify';
-import { getEmployee, updateEmployee } from './data.jsx';
-
+import { getEmployee, updateEmployee, simpleProducts, productLabel } from './data.jsx';
+import TagBox from 'devextreme-react/tag-box';
 import {
   Validator,
   RequiredRule,
   EmailRule,
   AsyncRule,
 } from 'devextreme-react/validator';
-import {
-  addressLabel,
-  emailLabel,
-  nameLabel,
-  lastnameLabel,
-  codeLabel,
-  phoneLabel
-} from './data.jsx';
+
 
 import Upload from './Upload.jsx';
 
@@ -58,23 +51,8 @@ const rtlEnabled = true;
 locale("fa");
 
 const employee = getEmployee();
-console.log(employee);
+// console.log(employee);
 
-// const fieldMap = {
-//   نام: 'firstName',
-//   'نام خانوادگی': 'lastName',
-//   'کد ملی': 'nationalCode',
-//   ایمیل: 'email',
-//   'شماره همراه': 'phoneNumber',
-// };
-
-// // تبدیل داده‌ها
-// const employee = service.getEmployee();
-// const translatedEmployee = {};
-
-// Object.keys(fieldMap).forEach((key) => {
-//   translatedEmployee[key] = employee[fieldMap[key]];
-// });
 
 
 const validationRules = {
@@ -119,7 +97,7 @@ const groupCaptionNamedRender = (iconName) => {
   return groupCaptionRender;
 };
 export default function App() {
-  const [formData, setFormData] = useState(getEmployee() ||{});
+  const [formData, setFormData] = useState(getEmployee() || {});
 
   const handleValueChange = (e, field) => {
     setFormData((prevData) => {
@@ -128,9 +106,12 @@ export default function App() {
       return updatedData;
     });
   };
-  
+
   function validateClick({ validationGroup }) {
+    console.log("Validation Group: ", validationGroup);
     const result = validationGroup.validate();
+    console.log(result)
+    // console.log("Broken rules: ", result.brokenRules);
     if (result.isValid) {
       updateEmployee(formData); // ذخیره داده‌ها در localStorage
       notify('اطلاعات با موفقیت ثبت گردید.', 'success');
@@ -138,25 +119,9 @@ export default function App() {
       notify('اطلاعات ثبت نشد. لطفا مجدد فیلدهای اجباری را بررسی نمایید', 'error');
     }
   }
-  
 
 
 
-  // function validateClick({ validationGroup }) {
-  //   const result = validationGroup.validate(); // اعتبارسنجی اطلاعات
-  //   console.log('Validation Result:', result);
-  //   console.log('Broken Rules:', result.brokenRules);
-  
-  //   if (result.isValid) {
-  //     service.updateEmployee(formData); // ذخیره اطلاعات در localStorage
-  //     notify('اطلاعات با موفقیت ثبت گردید.', 'success');
-  //   } else {
-  //     result.brokenRules.forEach((rule) => {
-  //       console.error(`Field: ${rule.selector}, Message: ${rule.message}`);
-  //     });
-  //     notify('اطلاعات ثبت نشد. لطفا مجدد فیلدهای اجباری را بررسی نمایید', 'error');
-  //   }
-  // }
   return (
     <React.Fragment>
       <div className="long-title">
@@ -167,6 +132,7 @@ export default function App() {
           colCount={2}
           id="form"
           formData={formData}
+          validationGroup="employeeForm"
         >
           <GroupItem
             captionRender={groupCaptionNamedRender('user')}
@@ -175,32 +141,63 @@ export default function App() {
             <TabbedItem>
               <TabPanelOptions deferRendering={false} />
               <Tab title="اطلاعات اولیه">
-                <SimpleItem dataField="نام" editorType="dxTextBox" validationRules={validationRules.position} >
+                {/* <SimpleItem dataField="نام" editorType="dxTextBox" validationRules={validationRules.position} >
                   <TextBox
-                  value={formData.نام} // مقدار فیلد
-                  onValueChanged={(e) => handleValueChange(e, 'نام')}
+                    value={formData.نام} // مقدار فیلد
+                    onValueChanged={(e) => handleValueChange(e, 'نام')}
                     validationMessagePosition="buttom"
-                    inputAttr={nameLabel}
+
                   >
                     <Validator>
-                      <RequiredRule message='اشتباه می باشد' />
+                      <RequiredRule message='وارد نمودن نام الزامی می باشد' />
                     </Validator>
                   </TextBox>
+                </SimpleItem> */}
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="نام"
+                  editorType="dxTextBox"
+                  editorOptions={{
+                    format: "#",
+                    value: formData.نام, // مقدار پیش‌فرض
+                    onValueChanged: (e) => handleValueChange(e, 'نام'),
+                    validationRules: [
+                      { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                    ],
+                  }}
+                >
+
                 </SimpleItem>
 
-                <SimpleItem dataField="نام خانوادگی" editorType="dxTextBox" validationRules={validationRules.position}>
+                {/* <SimpleItem dataField="نام خانوادگی" editorType="dxTextBox" validationRules={validationRules.position}>
                   <TextBox
-                   value={formData.نام_خانوادگی} // مقدار فیلد
-                   onValueChanged={(e) => handleValueChange(e, 'نام_خانوادگی')}
+                    value={formData.نام_خانوادگی} // مقدار فیلد
+                    onValueChanged={(e) => handleValueChange(e, 'نام_خانوادگی')}
                     validationMessagePosition="buttom"
-                    inputAttr={lastnameLabel}
+
                   >
                     <Validator>
                       <RequiredRule message="وارد نمودن نام خانوادگی الزامی می باشد" />
                     </Validator>
                   </TextBox>
-                </SimpleItem>
+                </SimpleItem> */}
 
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="نام خانوادگی"
+                  editorType="dxTextBox"
+                  editorOptions={{
+                    format: "#",
+                    value: formData.نام_خانوادگی, // مقدار پیش‌فرض
+                    onValueChanged: (e) => handleValueChange(e, 'نام_خانوادگی'),
+                    validationRules: [
+                      { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                    ],
+                  }}
+                >
+
+                </SimpleItem>
+                {/* 
                 <SimpleItem dataField="کد ملی" editorType="dxTextBox" validationRules={validationRules.position} >
                   <TextBox
                     value={formData.کد_ملی} // مقدار فیلد
@@ -212,24 +209,85 @@ export default function App() {
                       <RequiredRule message="وارد نمودن کد ملی الزامی می باشد" />
                     </Validator>
                   </TextBox>
-                </SimpleItem>
+                </SimpleItem> */}
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="کد ملی"
+                  editorType="dxNumberBox"
+                  editorOptions={{
+                    format: "#",
+                    value: formData.کد_ملی, // مقدار پیش‌فرض
+                    onValueChanged: (e) => handleValueChange(e, 'کد_ملی'),
+                    validationRules: [
+                      { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                    ],
+                  }}
+                >
 
-                <SimpleItem dataField="شماره شناسنامه" />
+                </SimpleItem>
+                {/* <SimpleItem
+                  dataField="نوع فعالیت" // نام داده‌ای که در formData ذخیره می‌شود
+                  editorType="dxTagBox" // نوع ویرایشگر
+                  editorOptions={{
+                    items: simpleProducts, // آیتم‌های موجود در TagBox
+                    searchEnabled: true, // امکان جستجو
+                    inputAttr: productLabel, // ویژگی‌های ورودی
+                    placeholder: "  انتخاب کنید...", // متن پیش‌فرض
+                    // onValueChanged: (e) => handleValueChange(e, 'products'), // کنترل تغییر مقدار
+                  }}
+                /> */}
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="زمینه فعالیت"
+                  editorType="dxTagBox"
+                  editorOptions={{
+                    items: simpleProducts,
+                    searchEnabled: true,
+                    inputAttr: productLabel,
+                    placeholder: "  انتخاب کنید...",
+                    // value: formData.زمینه_فعالیت, // مقدار پیش‌فرض
+                    // onValueChanged: (e) => handleValueChange(e, 'زمینه_فعالیت'),
+                    // validationRules: [
+                    //   { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                    // ],
+                  }}
+                >
+
+                </SimpleItem>
+                <SimpleItem dataField="شماره شناسنامه" editorType="dxNumberBox"
+                    editorOptions={{
+                      format: "#"
+                    }} />
                 <SimpleItem dataField="تاریخ تولد" editorType="dxDateBox" editorOptions={hireDateEditorOptions} />
-                <SimpleItem dataField="محل صدور" />
-                <SimpleItem dataField="شماره اقتصادی " editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position} >
+                {/* <SimpleItem dataField="شماره اقتصادی " editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position} >
                   <TextBox
-                   value={formData.شماره_اقتصادی} // مقدار فیلد
-                   onValueChanged={(e) => handleValueChange(e, 'شماره_اقتصادی')}
-                    validationMessagePosition="top"
-                    inputAttr={phoneLabel}
+                    value={formData.شماره_اقتصادی} // مقدار فیلد
+                    onValueChanged={(e) => handleValueChange(e, 'شماره_اقتصادی')}
+                    validationMessagePosition="buttom"
+
                   >
                     <Validator>
                       <RequiredRule message='وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' />
                     </Validator>
                   </TextBox>
+                </SimpleItem> */}
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="شماره اقتصادی "
+                  editorType="dxNumberBox"
+                  editorOptions={{
+                    format: "#",
+                    value: formData.شماره_اقتصادی, // مقدار پیش‌فرض
+                    onValueChanged: (e) => handleValueChange(e, 'شماره_اقتصادی'),
+                    validationRules: [
+                      { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                    ],
+                  }}
+                >
+
                 </SimpleItem>
 
+                <SimpleItem dataField="محل صدور" />
               </Tab>
               <Tab title="لوگو">
                 <Upload />
@@ -243,13 +301,15 @@ export default function App() {
               <TabbedItem>
                 <TabPanelOptions deferRendering={false} />
                 <Tab title="آدرس">
-                  <SimpleItem dataField="کشور"
+                  <SimpleItem
+                    validationRules={validationRules.position}
+                    dataField="کشور"
                     editorType="dxSelectBox"
                     editorOptions={{
                       dataSource: [
                         { english: 'IRAN', persian: 'ایران' },
                         { english: 'USA', persian: 'ایالات متحده امریکا' },
-                        { english: 'af', persian: 'افغانستان' },
+                        { english: 'afganestan', persian: 'افغانستان' },
                         { english: 'alman', persian: 'آلمان' },
                         { english: 'malezi', persian: 'مالزی' },
                         { english: 'hend', persian: 'هندوستان' },
@@ -261,12 +321,21 @@ export default function App() {
                         { english: 'turki', persian: 'ترکیه' },
                       ],
                       valueExpr: 'english',
-                      displayExpr: 'persian'
+                      displayExpr: 'persian',
+                      value: formData.کشور, // مقدار پیش‌فرض
+                      onValueChanged: (e) => handleValueChange(e, 'کشور'),
+                      validationRules: [
+                        { type: 'required', message: 'این فیلد باید پر شود' },
+                      ],
                     }}
-                    validationRules={validationRules.position}
                   >
-                    <Label render={LabelTemplate('info')} />
+
                   </SimpleItem>
+
+
+
+
+
                   <SimpleItem dataField="استان" validationRules={validationRules.position} editorType="dxSelectBox" editorOptions={{
                     dataSource: [
                       { english: 'Tehran', persian: 'تهران' },
@@ -287,22 +356,36 @@ export default function App() {
                   }} />
 
                   <SimpleItem dataField="شهر" validationRules={validationRules.position} />
-                  <SimpleItem dataField="کدپستی" editorType="dxNumberBox"
-                    editorOptions={{
-                      format: "#"
-                    }} />
-                  <SimpleItem dataField="آدرس" editorType="dxTextBox" validationRules={validationRules.position} >
+                  {/* <SimpleItem dataField="آدرس" editorType="dxTextBox" validationRules={validationRules.position} >
                     <TextBox
                       value={formData.آدرس} // مقدار فیلد
                       onValueChanged={(e) => handleValueChange(e, 'آدرس')}
-                      validationMessagePosition="left"
-                      inputAttr={addressLabel}
+                      validationMessagePosition="buttom"
                     >
                       <Validator>
                         <RequiredRule message="وارد نمودن آدرس الزامی می باشد" />
                       </Validator>
                     </TextBox>
+                  </SimpleItem> */}
+                  <SimpleItem
+                    validationRules={validationRules.position}
+                    dataField="آدرس"
+                    editorType="dxTextBox"
+                    editorOptions={{
+                      format: "#",
+                      value: formData.آدرس, // مقدار پیش‌فرض
+                      onValueChanged: (e) => handleValueChange(e, 'آدرس'),
+                      validationRules: [
+                        { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                      ],
+                    }}
+                  >
+
                   </SimpleItem>
+                  <SimpleItem dataField="کدپستی" editorType="dxNumberBox"
+                    editorOptions={{
+                      format: "#"
+                    }} />
                 </Tab>
               </TabbedItem>
 
@@ -319,25 +402,36 @@ export default function App() {
             <TabbedItem>
               <TabPanelOptions deferRendering={false} />
               <Tab title="ارتباطات">
-                <SimpleItem dataField="شماره همراه" editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position} >
+                {/* <SimpleItem dataField="شماره همراه" editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position} >
                   <TextBox
-                  value={formData.شماره_همراه} // مقدار فیلد
-                  onValueChanged={(e) => handleValueChange(e, 'شماره_همراه')}
+                    value={formData.شماره_همراه} // مقدار فیلد
+                    onValueChanged={(e) => handleValueChange(e, 'شماره_همراه')}
                     validationMessagePosition="buttom"
-                    inputAttr={phoneLabel}
                   >
                     <Validator>
                       <RequiredRule message="وارد نمودن شماره همراه الزامی می باشد" />
                     </Validator>
                   </TextBox>
+                </SimpleItem> */}
+                <SimpleItem
+                  validationRules={validationRules.position}
+                  dataField="شماره همراه "
+                  editorType="dxNumberBox"
+                  editorOptions={{
+                    format: "#",
+                    value: formData.شماره_همراه, // مقدار پیش‌فرض
+                    onValueChanged: (e) => handleValueChange(e, 'شماره_همراه'),
+
+                  }}
+                >
+
                 </SimpleItem>
-                <SimpleItem dataField="تلفن ثابت" />
                 <SimpleItem dataField="ایمیل" editorType="dxTextBox" validationRules={validationRules.position} >
                   <TextBox value={formData.ایمیل} // مقدار فیلد
-                   onValueChanged={(e) => handleValueChange(e, 'ایمیل')} inputAttr={emailLabel} validationMessagePosition="top">
+                    onValueChanged={(e) => handleValueChange(e, 'ایمیل')} validationMessagePosition="top">
                     <Validator  >
-                      <RequiredRule message="Email is required" validationMessagePosition="top" />
-                      <EmailRule message="وارد نمودن ایمیل الزامی می باشد" />
+                      <RequiredRule message="وارد نمودن ایمیل الزامی می باشد" validationMessagePosition="buttom" />
+                      <EmailRule message="فرمت صحیح ایمیل را رعایت بفرمایید" />
                       <AsyncRule
                         message="Email is already registered"
                         validationCallback={asyncValidation}
@@ -345,6 +439,11 @@ export default function App() {
                     </Validator>
                   </TextBox>
                 </SimpleItem>
+
+                <SimpleItem dataField="تلفن ثابت" editorType="dxNumberBox"
+                    editorOptions={{
+                      format: "#"
+                    }} />
 
               </Tab>
             </TabbedItem>
@@ -356,31 +455,59 @@ export default function App() {
               <TabbedItem>
                 <TabPanelOptions deferRendering={false} />
                 <Tab title="حساب">
-                  <SimpleItem dataField="حساب بانکی"  editorType="dxNumberBox" editorOptions={{ format: "#" }}  >
+                  {/* <SimpleItem dataField="حساب بانکی" editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position} >
                     <TextBox
                       value={formData.حساب_بانکی} // مقدار فیلد
                       onValueChanged={(e) => handleValueChange(e, 'حساب_بانکی')}
                       validationMessagePosition="buttom"
-                      inputAttr={phoneLabel}
                     >
                       <Validator>
                         <RequiredRule message='وارد نمودن حساب بانکی الزامی است' />
                       </Validator>
                     </TextBox>
+                  </SimpleItem> */}
+                  <SimpleItem
+                    validationRules={validationRules.position}
+                    dataField="حساب بانکی"
+                    editorType="dxNumberBox"
+                    editorOptions={{
+                      format: "#",
+                      value: formData.حساب_بانکی, // مقدار پیش‌فرض
+                      onValueChanged: (e) => handleValueChange(e, 'حساب_بانکی'),
+                      validationRules: [
+                        { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                      ],
+                    }}
+                  >
+
                   </SimpleItem>
-                  <SimpleItem dataField="شعبه بانکی" />
-                  <SimpleItem dataField="شماره شبا"  editorType="dxNumberBox" editorOptions={{ format: "#" }}  >
+                  {/* <SimpleItem dataField="شماره شبا" editorType="dxNumberBox" editorOptions={{ format: "#" }} validationRules={validationRules.position}>
                     <TextBox
                       value={formData.شماره_شبا} // مقدار فیلد
                       onValueChanged={(e) => handleValueChange(e, 'شماره_شبا')}
                       validationMessagePosition="top"
-                      inputAttr={phoneLabel}
                     >
                       <Validator>
                         <RequiredRule message='وارد نمودن شماره شبا الزامی می باشد' />
                       </Validator>
                     </TextBox>
+                  </SimpleItem> */}
+                  <SimpleItem
+                    validationRules={validationRules.position}
+                    dataField="شماره شبا "
+                    editorType="dxNumberBox"
+                    editorOptions={{
+                      format: "#",
+                      value: formData.شماره_شبا, // مقدار پیش‌فرض
+                      onValueChanged: (e) => handleValueChange(e, 'شماره_شبا'),
+                      validationRules: [
+                        { type: 'required', message: 'وارد نمودن شماره اقتصادی(جواز)الزامی می باشد' },
+                      ],
+                    }}
+                  >
+
                   </SimpleItem>
+                  <SimpleItem dataField="شعبه بانکی" />
                 </Tab>
                 <Tab title="بیمه">
                   <SimpleItem dataField="شعبه بیمه" />
@@ -395,8 +522,7 @@ export default function App() {
             >
 
               <TabPanelOptions deferRendering={false} />
-
-              <SimpleItem dataField="حساب بانکی" />
+              <SimpleItem dataField="فیلدساز" />
 
 
             </GroupItem>
@@ -409,6 +535,7 @@ export default function App() {
             id="button"
             text="ثبت اطلاعات"
             type="default"
+            validationGroup="employeeForm"
           />
         </div>
       </div>

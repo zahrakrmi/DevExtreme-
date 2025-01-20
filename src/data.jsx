@@ -16,7 +16,7 @@ export const getEmployee = () => {
       استان: '',
       شهر: '',
       کدپستی: '',
-      آدرس: 'تهران',
+      آدرس: '',
       ایمیل: '',
       تلفن_ثابت: '',
       شماره_همراه: '',
@@ -24,12 +24,22 @@ export const getEmployee = () => {
       شعبه_بانکی: '',
       شماره_شبا: '',
       شعبه_بیمه: '',
+      زمینه_فعالیت:''
     };
   }
   return JSON.parse(storedData);
 };
 
-
+export const simpleProducts = [
+  'پیمانکار',
+  'مشاوره',
+  'فروشنده',
+  'مزایده گر',
+  'سازنده',
+  'تولید کننده',
+  'خریدار،بهره بردار یا کارفرما',
+];
+export const productLabel = { 'aria-label': 'Product' };
 // بروزرسانی اطلاعات در localStorage
 export const updateEmployee = (newData) => {
   localStorage.setItem(employeeDataKey, JSON.stringify(newData));
