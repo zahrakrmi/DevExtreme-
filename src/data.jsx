@@ -1,4 +1,4 @@
-const employeeDataKey = 'employeeData'; // کلیدی برای ذخیره اطلاعات در localStorage
+const employeeDataKey = 'employeeData'; 
 
 export const getEmployee = () => {
   const storedData = localStorage.getItem(employeeDataKey);
@@ -17,7 +17,7 @@ export const getEmployee = () => {
       شهر: '',
       کدپستی: '',
       آدرس: '',
-      ایمیل: '',
+      ایمیل: ' ',
       تلفن_ثابت: '',
       شماره_همراه: '',
       حساب_بانکی: '',
@@ -54,17 +54,7 @@ const کشور =[
   'Support Manager',
   'Shipping Manager',
 ]
-export const nameLabel = { 'aria-label': 'Name' };
-export const lastnameLabel = { 'aria-label': 'lastName' };
-export const codeLabel = { 'aria-label': 'code' };
-export const phoneLabel = { 'aria-label': 'phone' };
-export const emailLabel = { 'aria-label': 'Email' };
-export const maskLabel = { 'aria-label': 'Mask' };
-export const dateLabel = { 'aria-label': 'Date' };
-export const cityLabel = { 'aria-label': 'City' };
-export const addressLabel = { 'aria-label': 'Address' };
-export const passwordLabel = { 'aria-label': 'Password' };
-export const countryLabel = { 'aria-label': 'Country' };
+
 
 export default {
   getEmployee() {

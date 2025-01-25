@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "cldr-data": "^36.0.2",
+    "dayjs": "^1.11.13",
     "devextreme": "^24.2.3",
     "devextreme-react": "^24.2.3",
     "globalize": "^1.7.0",
+    "jalaliday": "^2.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
